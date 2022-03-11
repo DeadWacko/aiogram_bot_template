@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 class DBMiddleware(LifetimeControllerMiddleware):
     skip_patterns = ["error", "update"]
-    
+
     def __init__(self, db_factory: sessionmaker):
         super().__init__()
         self.db_factory = db_factory

@@ -13,7 +13,7 @@ from app.db_api.base import Base
 from app.filters.bot_admin_filter import BotAdminFilter
 from app.handlers.users.start import register_start
 from app.middlewares.db_middleware import DBMiddleware
-from app.middlewares.user_middleware import UserMiddleware
+from app.middlewares.throttling import ThrottlingMiddleware
 
 logger = logging.getLogger(__name__)
 
@@ -31,8 +31,8 @@ def setup_handlers(dp: Dispatcher):
 
 
 def setup_middlewares(dp: Dispatcher, db_factory: sessionmaker):
+    #dp.middleware.setup(ThrottlingMiddleware)
     dp.middleware.setup(DBMiddleware(db_factory))
-    dp.middleware.setup(UserMiddleware())
 
 
 def setup_filters(dp: Dispatcher):
@@ -71,12 +71,12 @@ async def main():
     )
     dp = Dispatcher(bot=bot, storage=storage)
 
-    setup_middlewares(dp, db_factory)
     setup_filters(dp)
     setup_handlers(dp)
+    setup_middlewares(dp, db_factory)
 
     try:
-        logging.info("Everything is ready to launch!")
+        logging.info("Запуск бота")
         await dp.start_polling()
     finally:
         await dp.storage.close()

@@ -6,7 +6,7 @@ from environs import Env
 @dataclass
 class BotSettings:
     token: str
-    admins: list[int]
+    admins: int
     use_redis: bool
 
 
